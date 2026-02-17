@@ -16,10 +16,6 @@ git clone [https://github.com/njvdh/bph.git](https://github.com/njvdh/bph.git)
 cd bph
 chmod +x install.sh
 ./install.sh
-
-> [!IMPORTANT]
-> **Migration Note:** If you previously manually added BPH code to your `~/.bashrc` or `~/.bash_aliases`,<b>
-> please remove those entries before running the installer to avoid duplicate logic.<b>
 ```
 
 ## 📂 Structure
