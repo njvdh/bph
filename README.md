@@ -9,6 +9,9 @@ BPH ensures your Bash history is never lost. It saves commands immediately and s
 
 ## 🚀 Installation
 ```bash
+> [!IMPORTANT]
+> **Migration Note:** If you previously manually added BPH code to your `~/.bashrc` or `~/.bash_aliases`,<b>
+> please remove those entries before running the installer to avoid duplicate logic.<b>
 git clone https://github.com/njvdh/bph.git
 cd bph
 chmod +x install.sh
