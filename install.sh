@@ -1,25 +1,30 @@
 #!/bin/bash
-# bph-installer - Setup Bash Persistent History
+# bph-installer - Intelligent Setup voor Bash Persistent History
 
-BPH_DIR="$HOME/.bph"
 BPH_SCRIPT="bph_setup.sh"
+TARGET_FILE="$HOME/.bashrc"
 
 echo "--- Installing Bash Persistent History ---"
 
-# 1. Maak de directory aan voor de geschiedenisbestanden
-mkdir -p "$BPH_DIR"
-
-# 2. Kopieer het hoofdscript naar een vaste plek
-cp "$BPH_SCRIPT" "$BPH_DIR/$BPH_SCRIPT"
-
-# 3. Voeg de activatie-regel toe aan .bashrc als die er nog niet in staat
-LINE="source $BPH_DIR/$BPH_SCRIPT"
-if ! grep -qF "$LINE" "$HOME/.bashrc"; then
-    echo "$LINE" >> "$HOME/.bashrc"
-    echo "Added BPH to ~/.bashrc"
-else
-    echo "BPH already present in ~/.bashrc"
+if [ ! -f "$BPH_SCRIPT" ]; then
+    echo "Fout: $BPH_SCRIPT niet gevonden!"
+    exit 1
 fi
 
-echo "--- Installation complete! ---"
-echo "Restart your terminal or run: source ~/.bashrc"
+cp "$BPH_SCRIPT" "$HOME/.bph_logic"
+
+MARKER="# BPH-ACTIVATION-MARKER"
+if grep -q "$MARKER" "$TARGET_FILE"; then
+    echo "BPH is al aanwezig in $TARGET_FILE. Update uitgevoerd."
+else
+    echo "Nieuwe installatie: BPH toevoegen aan $TARGET_FILE..."
+    cat <<EOT >> "$TARGET_FILE"
+
+$MARKER
+if [ -f "\$HOME/.bph_logic" ]; then
+    source "\$HOME/.bph_logic"
+fi
+EOT
+fi
+
+echo "--- Installatie voltooid! ---"
