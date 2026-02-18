@@ -15,7 +15,7 @@ if [ "$USERS_COUNT" -gt 1 ]; then
     echo -e "\e[1;33m[!] ATTENTION:\e[0m Multiple administrators logged in: $(who | awk '{print $1}' | sort -u | tr '\n' ' ')"
 fi
 
-# --- 2. DE 'H' FUNCTIE (ZOEKEN) ---
+# --- 2. DE 'H' FUNCTIE (ZOEKEN & BEHEER) ---
 h () {
     if [ ! -f "$PH_COMMAND_LOG" ]; then
         echo "Logfile not found at: $PH_COMMAND_LOG"; history; return 0
@@ -27,7 +27,12 @@ h () {
             grep -F "$PH_SEPARATOR$PHtty$PH_SEPARATOR" "$PH_COMMAND_LOG" | grep -F "$TODAY$PH_SEPARATOR" ;;
         p)  cat "$PH_COMMAND_LOG" ;;
         s)  [ -z "$2" ] && echo "Usage: h s <term>" || grep -i "$2" "$PH_COMMAND_LOG" ;;
-        *)  echo "Usage: h [m|p|s <term>]" ;;
+        dumps) 
+            echo "--- Onderschepte Data Dumps ---"
+            grep "\[DATA DUMP -" "$PH_COMMAND_LOG"
+            echo -n "Totaal aantal: "
+            grep -c "\[DATA DUMP -" "$PH_COMMAND_LOG" ;;
+        *)  echo "Usage: h [m|p|s <term>|dumps]" ;;
     esac
 }
 
