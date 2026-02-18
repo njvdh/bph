@@ -1,35 +1,27 @@
 # Bash Persistent History (BPH) V3.7
 
-A robust solution for system administrators to capture and search command history across multiple sessions, users, and reboots.
+BPH is a lightweight, robust tool for system administrators to capture and search command history across multiple sessions, users, and environments.
 
-## Core Features
+> **Project Status: Beta / Work in Progress** > This tool is part of an ongoing development series. While the core history features are stable, other infrastructure scripts in this repository may be subject to frequent updates.
 
-* **Reliable Persistence:** All commands are logged with exit code, timestamp, TTY, and source IP to `~/.phist/commands.log`.
-* **Multi-user Alert:** Notifies you upon login if other administrators are currently active on the system.
-* **Data-dump Protection:** Prevents log bloating by truncating commands longer than 2048 bytes (ideal for accidental pastes of RSA keys or large scripts).
-* **Automatic Retention:** Automatically purges log files older than 365 days (checked hourly) to keep disk usage predictable.
-* **Ctrl+R Sync:** Instantly synchronizes history between concurrent terminal windows.
-* **The `h` Tool:** A specialized function to search and manage your history efficiently.
+## Key Features
+
+* **Advanced Persistence:** Logs commands with exit codes, timestamps, TTY, and source IP to `~/.phist/commands.log`.
+* **Multi-user Alert:** Notifies you upon login if other administrators are active.
+* **Data-dump Protection:** Automatically truncates commands longer than 2048 bytes to prevent log pollution.
+* **Automated Retention:** Keeps your disk clean by purging logs older than 365 days.
+* **The `h` Tool:** A powerful helper function for searching your history.
 
 ## Logging Logic: Actions vs. Data
 
-BPH is designed to log **actions**, not **data streams**.
+BPH logs **actions**, not **payloads**.
+* **Logged:** The command `cat > secret.txt` is recorded.
+* **Not Logged:** The actual content piped or typed into the file (STDIN) is ignored to ensure privacy and clean logs.
 
-* **What is logged:** The command itself. For example, if you run `cat > config.conf`, the command is recorded so you know *when* the file was modified.
-* **What is NOT logged:** The content you type or paste into the file (STDIN) after the command. This ensures your logs remain readable and prevents sensitive data from being stored in plain text history.
+## Installation & Usage
 
-## Usage: The `h` Command
-
-| Command | Action |
-| :--- | :--- |
-| `h` | Displays the standard Bash history. |
-| `h p` | Displays the full persistent log (`commands.log`). |
-| `h s <term>` | Searches the log for a specific term (case-insensitive). |
-| `h m` | Shows today's results for the current TTY only. |
-| `h dumps` | Shows all intercepted "Data Dumps" (oversized commands). |
-
-## Installation
-
-1. Clone this repository.
-2. Run `./install.sh`.
-3. Reload your environment: `source ~/.bashrc`.
+### For New Users:
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/njvdh/bph.git](https://github.com/njvdh/bph.git)
+   cd bph
