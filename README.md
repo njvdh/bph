@@ -1,26 +1,35 @@
-# BPH - Bash Persistent History 📜
+# Bash Persistent History (BPH) V3.7
 
-BPH ensures your Bash history is never lost. It saves commands immediately and shares history across multiple active sessions and containers.
+A robust solution for system administrators to capture and search command history across multiple sessions, users, and reboots.
 
-## ✨ Features
-- **Real-time storage:** Commands are written instantly.
-- **Session sync:** Use a command in Terminal A, see it in Terminal B.
-- **Persistence:** Perfect for LXD containers and Proxmox nodes.
+## Core Features
 
-## 🚀 Installation
-> [!IMPORTANT]
-> **Migration Note:** If you previously manually added BPH code to your `~/.bashrc` or `~/.bash_aliases`, please remove those entries before running the installer to avoid duplicate logic.
+* **Reliable Persistence:** All commands are logged with exit code, timestamp, TTY, and source IP to `~/.phist/commands.log`.
+* **Multi-user Alert:** Notifies you upon login if other administrators are currently active on the system.
+* **Data-dump Protection:** Prevents log bloating by truncating commands longer than 2048 bytes (ideal for accidental pastes of RSA keys or large scripts).
+* **Automatic Retention:** Automatically purges log files older than 365 days (checked hourly) to keep disk usage predictable.
+* **Ctrl+R Sync:** Instantly synchronizes history between concurrent terminal windows.
+* **The `h` Tool:** A specialized function to search and manage your history efficiently.
 
-```bash
-git clone [https://github.com/njvdh/bph.git](https://github.com/njvdh/bph.git)
-cd bph
-chmod +x install.sh
-./install.sh
-```
+## Logging Logic: Actions vs. Data
 
-## 📂 Structure
-- `bph_setup.sh`: Core persistent history logic.
-- `install.sh`: Intelligent installation script.
+BPH is designed to log **actions**, not **data streams**.
 
----
-*Part of the [njvdh](https://github.com/njvdh) infrastructure tooling.*
+* **What is logged:** The command itself. For example, if you run `cat > config.conf`, the command is recorded so you know *when* the file was modified.
+* **What is NOT logged:** The content you type or paste into the file (STDIN) after the command. This ensures your logs remain readable and prevents sensitive data from being stored in plain text history.
+
+## Usage: The `h` Command
+
+| Command | Action |
+| :--- | :--- |
+| `h` | Displays the standard Bash history. |
+| `h p` | Displays the full persistent log (`commands.log`). |
+| `h s <term>` | Searches the log for a specific term (case-insensitive). |
+| `h m` | Shows today's results for the current TTY only. |
+| `h dumps` | Shows all intercepted "Data Dumps" (oversized commands). |
+
+## Installation
+
+1. Clone this repository.
+2. Run `./install.sh`.
+3. Reload your environment: `source ~/.bashrc`.
