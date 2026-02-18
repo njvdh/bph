@@ -1,33 +1,31 @@
 #!/bin/bash
-# bph-installer
+# === BASH PERSISTENT HISTORY INSTALLER (V3.7) ===
 
-BPH_SCRIPT="bph_setup.sh"
-TARGET_FILE="$HOME/.bashrc"
-BPH_LOGIC="$HOME/.bph_logic"
-PH_LOG_DIR="$HOME/.phist"
-PH_COMMAND_LOG="$PH_LOG_DIR/commands.log"
+SETUP_FILE="bph_setup.sh"
+TARGET_DIR="$HOME/.phist"
+ALIAS_FILE="$HOME/.bash_aliases"
 
-echo "--- Installing Bash Persistent History ---"
+echo "Installing Bash Persistent History..."
 
-# 1. Prepare directory
-mkdir -p "$PH_LOG_DIR"
+# 1. Maak de log-map aan
+mkdir -p "$TARGET_DIR"
 
-# 2. Migration (if needed)
-if [ ! -f "$PH_COMMAND_LOG" ] && [ -f "$HOME/.bash_history" ]; then
-    echo "Importing existing .bash_history..."
-    TODAY=$(date +%Y-%m-%d)
-    NOW=$(date +%H:%M:%S)
-    while read -r line; do
-        echo -e "$TODAY\t$NOW\t$(hostname)\tlegacy\t0\t$line" >> "$PH_COMMAND_LOG"
-    done < "$HOME/.bash_history"
+# 2. Kopieer de setup naar de thuismap (verborgen)
+cp "$SETUP_FILE" "$HOME/.$SETUP_FILE"
+chmod +x "$HOME/.$SETUP_FILE"
+
+# 3. Zorg voor de 'source' in .bash_aliases (of .bashrc als aliases niet bestaat)
+if [ ! -f "$ALIAS_FILE" ]; then
+    ALIAS_FILE="$HOME/.bashrc"
 fi
 
-cp "$BPH_SCRIPT" "$BPH_LOGIC"
-
-# 3. Add to .bashrc
-MARKER="# BPH-ACTIVATION-MARKER"
-if ! grep -q "$MARKER" "$TARGET_FILE"; then
-    echo -e "\n$MARKER\nif [ -f \"$BPH_LOGIC\" ]; then source \"$BPH_LOGIC\"; fi" >> "$TARGET_FILE"
+if ! grep -q "$SETUP_FILE" "$ALIAS_FILE"; then
+    echo "" >> "$ALIAS_FILE"
+    echo "# Bash Persistent History Setup" >> "$ALIAS_FILE"
+    echo "if [ -f \"\$HOME/.$SETUP_FILE\" ]; then . \"\$HOME/.$SETUP_FILE\"; fi" >> "$ALIAS_FILE"
+    echo "Installation linked to $ALIAS_FILE"
+else
+    echo "Installation already linked in $ALIAS_FILE"
 fi
 
-echo "--- Installation complete! ---"
+echo "Done! Please run: source $ALIAS_FILE"
